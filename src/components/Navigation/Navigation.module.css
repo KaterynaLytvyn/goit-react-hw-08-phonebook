@@ -1,0 +1,21 @@
+.container {
+    padding: 20px;
+    background-color: #CFD2CF;
+    border-bottom: 5px solid #EB1D36;
+    box-shadow: 0 2px 3px grey;
+    display: flex;
+}
+
+.link {
+    color:black;
+    font-size: 20px;
+    font-weight: bold;
+    margin-right: 30px;
+}
+
+.active_link {
+    color: #EB1D36;
+    font-size: 20px;
+    font-weight: bold;
+    margin-right: 30px;
+}
