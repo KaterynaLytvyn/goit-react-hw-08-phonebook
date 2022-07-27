@@ -1,14 +1,15 @@
 import ContactList from '../components/ContactList/ContactList.jsx'
 import ContactForm from '../components/ContactForm/ContactForm.jsx'
+import Filter from '../components/Filter/Filter.jsx'
 import { useSelector } from 'react-redux';
 import { useGetContactsQuery, useAddContactMutation } from '../redux/PhonebookSlice'
+import Container from 'react-bootstrap/Container';
 
 export default function ContactsView() {
 
-    //const isLoggedIn = useSelector(state => state.auth.isLoggedIn)
-
     const { data: contacts, error, isLoading } = useGetContactsQuery()
     const [addContact] = useAddContactMutation()
+    const filter = useSelector(state => state.filter)
 
     const handleAddContact = async contact => {
         if(contacts.some(c => c.name ===contact.name)) {
@@ -22,15 +23,24 @@ export default function ContactsView() {
           console.log('error', error)
         }
       }
+    
+    const getVisibleContacts = () => {
+      const normilizedFilter = filter.toLowerCase();
+  
+      const result = contacts.filter(contact => contact.name.toLowerCase().includes(normilizedFilter))
+      return result;
+    }
 
     return(
-        <div>
-            <h1>Contacts</h1>
+        <Container>
+            <h1>Phonebook</h1>
             <ContactForm onSubmit={handleAddContact}/>
-            {contacts && <ContactList contacts={contacts}/>}
-        </div>
+            <h2>Contacts</h2>
+            <Filter />
+            {error && <p>An error occurred:{error}</p>}
+            {isLoading && <p>Loading...</p>}
+            {contacts && <ContactList contacts={getVisibleContacts()}/>}
+        </Container>
     )
 }
-// {isLoading && <p>Loading...</p>}
-// {error && <p>An error occurred: {error.message}</p>}
-//{contacts && <ContactList contacts={contacts}/>}
+

@@ -30,8 +30,8 @@ export default function ContactForm(props) {
   };
 
   return (
-      <form onSubmit={handleSubmit} className={s.form}>
-        <label>
+      <form onSubmit={handleSubmit}>
+        <label className={s.label}>
           Name
           <input
             type="text"
@@ -43,7 +43,7 @@ export default function ContactForm(props) {
             required
           />
         </label>
-        <label>
+        <label className={s.label}>
           Number
           <input
             type="tel"

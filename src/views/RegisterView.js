@@ -1,7 +1,10 @@
 import { useState } from "react"
 import { useDispatch } from 'react-redux'
 import { useRegisterUserMutation } from '../redux/PhonebookSlice'
-import { registerUser } from '../redux/actions'
+import { register } from '../redux/actions'
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import Container from 'react-bootstrap/Container';
 
 export default function RegisterView() {
 
@@ -13,6 +16,7 @@ export default function RegisterView() {
     const [password, setPassword] = useState('')
 
     const handleChange = event => {
+
         const value = event.target.value;
         const name = event.target.name;
 
@@ -32,9 +36,11 @@ export default function RegisterView() {
     const handleUserSignUp = async user => {
         try {
             const result = await registerUser(user)
-            console.log('result of registerUser',result)
-            dispatch(registerUser(result))
-          } catch (error) {
+            console.log('result of registerUser', result)
+            if (!result.error){dispatch(register(result.data))}  
+            else alert('An error occured:'+ result.error.data.name)           
+            
+          } catch (error) {            
             console.log('error', error)
           }
     }
@@ -52,41 +58,29 @@ export default function RegisterView() {
     }   
 
     return(
-        <div>
+        <Container>
             <h1>Registration Page</h1>
-            <form onSubmit={handleSubmit}>
-                <label>
-                Name
-                <input
-                    type="text"
-                    name="name"
-                    value={name}
-                    onChange={handleChange}
-                    required
-                />
-                </label>
-                <label>
-                Email
-                <input
-                    type="email"
-                    name="email"
-                    value={email}
-                    onChange={handleChange}
-                    required
-                />
-                </label>
-                <label>
-                Password
-                <input
-                    type="password"
-                    name="password"
-                    value={password}
-                    onChange={handleChange}
-                    required
-                />
-                </label>
-                <button type="submit" className="button">Sign up</button>
-            </form>
-        </div>
+            <Form onSubmit={handleSubmit}>
+                <Form.Group className="mb-3">
+                    <Form.Label>Name</Form.Label>
+                    <Form.Control type="text" placeholder="Enter your name" name="name" onChange={handleChange} />
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="formBasicEmail">
+                    <Form.Label>Email address</Form.Label>
+                    <Form.Control type="email" placeholder="Enter email" name="email" onChange={handleChange} />
+                    <Form.Text className="text-muted">
+                    We'll never share your email with anyone else.
+                    </Form.Text>
+                </Form.Group>
+
+                <Form.Group className="mb-3" controlId="formBasicPassword">
+                    <Form.Label>Password</Form.Label>
+                    <Form.Control type="password" placeholder="Password" name="password" onChange={handleChange}/>
+                </Form.Group>
+                 <Button variant="primary" type="submit">
+                    Register
+                </Button>
+            </Form>
+        </Container>
     )
 }

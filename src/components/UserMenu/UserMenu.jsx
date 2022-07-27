@@ -9,9 +9,7 @@ export default function UserMenu() {
     const userEmail = useSelector(state => state.auth.user.email)
     const [logoutUser] = useLogoutUserMutation()
     const dispatch = useDispatch()
-
-
-    //await??
+    
     const handleClick = () => {
         logoutUser()
         dispatch(logout())
@@ -19,8 +17,8 @@ export default function UserMenu() {
 
     return (
             <div className={s.container}>
-                <p>{userEmail}</p>
-                <button type="button" onClick={handleClick}>Log Out</button>
+                <p className={s.user}>{userEmail}</p>
+                <button type="button" className = "button" onClick={handleClick}>Log Out</button>
             </div>
     );
   }

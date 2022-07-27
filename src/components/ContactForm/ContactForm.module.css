@@ -8,3 +8,7 @@ input {
     margin-bottom: 10px;
     -webkit-appearance: none;
 }
+
+.label {
+    margin-right: 10px;
+}

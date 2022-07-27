@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
@@ -9,8 +8,6 @@ import { useGetCurrentUserQuery } from './redux/PhonebookSlice'
 import { fetchUser } from './redux/actions'
 import { useSelector } from 'react-redux';
 
-let isInitialLoad = true
-
 const Home = lazy(() => import('./views/HomeView'));
 const Register = lazy(() => import('./views/RegisterView'));
 const Login = lazy(() => import('./views/LoginView'));
@@ -18,24 +15,17 @@ const Contacts = lazy(() => import('./views/ContactsView'));
 
 export const App = () => {
 
+    let skip = true;
     const dispatch = useDispatch()
     const token = useSelector(state => state.auth.token)
-    //const skip = !isInitialLoad || (token?false:true) 
-    let skip = true
-    if(isInitialLoad && token){
-      skip=false;
+    const user = useSelector(state => state.auth.user)
+    
+    if(token && user.name===null && user.email===null){
+      skip=false
     }
 
-    console.log('isInitialLoad:', isInitialLoad, 'token', token, 'skip', skip ) 
-
     const { data } = useGetCurrentUserQuery(undefined,{skip})
-    console.log('data from App', data)
-    isInitialLoad = false
-
-    useEffect(() => {
-      console.log('useEffect')
-      if(!skip){dispatch(fetchUser(data))}      
-    },[dispatch])
+    if(data){dispatch(fetchUser(data))}
 
     return (
       <div>
@@ -43,14 +33,12 @@ export const App = () => {
         <Suspense fallback="">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/contacts" element={<Contacts />}/>
+            <Route path="/register" element={<PublicRoute restricted><Register /></PublicRoute>} />
+            <Route path="/login" element={<PublicRoute restricted><Login /></PublicRoute>} />
+            <Route path="/contacts" element={<PrivateRoute><Contacts /></PrivateRoute>}/>
             <Route path="*" element={<Navigate to='/' />} />
           </Routes>
         </Suspense>
       </div>
     );
   };
-
-  //<PrivateRoute path="/contacts"><Contacts /></PrivateRoute>
